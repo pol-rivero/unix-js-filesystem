@@ -1,0 +1,6 @@
+{
+    "displayName": "sh",
+    "fileType": "binary",
+    "permissions": "execute",
+    "isStartupCommand": true
+}
