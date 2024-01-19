@@ -11,10 +11,10 @@
       "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
     },
     "dependencies": {
-      "unix-lib": "^0.0.1"
+      "unix-core": "^0.0.2"
     },
     "devDependencies": {
-      "unix-parser": "^0.0.1"
+      "unix-parser": "^0.0.2"
     },
     "scripts": {
     }
