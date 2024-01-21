@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "baseUrl": "ROOT",
+    "lib": ["ESNext"]
+  },
+  "include": ["ROOT/**/*.ts"],
+}

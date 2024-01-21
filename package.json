@@ -7,15 +7,16 @@
     "author": "p-rivero",
     "license": "MIT",
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
+        "type": "git",
+        "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
     },
     "dependencies": {
-      "unix-core": "^0.0.2"
+        "unix-core": "^0.0.3"
     },
     "devDependencies": {
-      "unix-parser": "^0.0.2"
+        "unix-parser": "^0.0.3"
     },
     "scripts": {
+        "bundle": "unix-parser ROOT -o dist/filesystem.js"
     }
 }
