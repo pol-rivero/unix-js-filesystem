@@ -14,6 +14,7 @@
         "unix-core": "^0.0.7"
     },
     "devDependencies": {
+        "@types/node": "^20.11.24",
         "unix-parser": "^0.0.5"
     },
     "scripts": {
