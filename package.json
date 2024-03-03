@@ -11,12 +11,12 @@
         "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
     },
     "dependencies": {
-        "unix-core": "^0.0.3"
+        "unix-core": "^0.0.7"
     },
     "devDependencies": {
-        "unix-parser": "^0.0.3"
+        "unix-parser": "^0.0.5"
     },
     "scripts": {
-        "bundle": "unix-parser ROOT -o dist/filesystem.js"
+        "bundle": "unix-parser ROOT -o dist/filesystem.js --indent 0"
     }
 }
