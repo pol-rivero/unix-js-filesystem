@@ -18,6 +18,6 @@
         "unix-parser": "^0.0.5"
     },
     "scripts": {
-        "bundle": "unix-parser ROOT -o dist/filesystem.js --indent 0"
+        "bundle": "unix-parser ROOT -o dist/filesystem.cjs --indent 0"
     }
 }
