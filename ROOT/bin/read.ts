@@ -1,5 +1,5 @@
-import { ExecutionContext } from "unix-core"
+import { Process } from "unix-core"
 
-export function execute(context: ExecutionContext, args: string[]) {
+export function execute(process: Process, args: string[]) {
     // TODO: Implement
 }

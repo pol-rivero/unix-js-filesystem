@@ -11,11 +11,11 @@
         "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
     },
     "dependencies": {
-        "unix-core": "^0.0.7"
+        "unix-core": "^0.0.8"
     },
     "devDependencies": {
         "@types/node": "^20.11.24",
-        "unix-parser": "^0.0.5"
+        "unix-parser": "^0.0.6"
     },
     "scripts": {
         "bundle": "unix-parser ROOT -o dist/filesystem.cjs --indent 0"

@@ -3,16 +3,12 @@
 // IF YOU TARGET NODE.JS, KEEP THIS CODE
 
 export async function read(): Promise<string> {
-    process.stdin.setRawMode(true)
-    process.stdin.resume()
-    process.stdin.setEncoding("utf8")
-    return new Promise((resolve, reject) => {
-        process.stdin.once("data", (data) => {
-            process.stdin.pause()
-            process.stdin.setRawMode(false)
-            resolve(data.toString())
-        })
-    })
+    let result = process.stdin.read(1)
+    while (result === null) {
+        await new Promise((resolve) => process.stdin.once("readable", resolve))
+        result = process.stdin.read(1)
+    }
+    return result.toString()
 }
 
 export function write(text: string) {
