@@ -3,12 +3,13 @@
 // IF YOU TARGET NODE.JS, KEEP THIS CODE
 
 export async function read(): Promise<string> {
-    let result = process.stdin.read(1)
-    while (result === null) {
-        await new Promise((resolve) => process.stdin.once("readable", resolve))
-        result = process.stdin.read(1)
-    }
-    return result.toString()
+    process.stdin.resume()
+    return new Promise(resolve => {
+        process.stdin.once("data", text => {
+            process.stdin.pause()
+            resolve(text.toString())
+        })
+    })
 }
 
 export function write(text: string) {
