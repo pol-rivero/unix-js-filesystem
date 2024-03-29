@@ -1,8 +1,8 @@
 import readline from 'readline'
 import { UnixShell } from "unix-core"
 
-// Don't forget to run `npm run bundle` to generate the dist directory
-import virtualFS from "../dist/filesystem.cjs"
+// Don't forget to run `npm run bundle` to generate this file
+import virtualFS from "./filesystem.cjs"
 
 const CTRL_C = '\u0003'
 

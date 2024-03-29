@@ -10,9 +10,10 @@ export function write(text: string) {
 // IF YOU TARGET THE BROWSER, REMOVE THE CODE ABOVE AND UNCOMMENT THE CODE BELOW.
 
 // export function write(text: string) {
-//     const terminal = document.getElementById("terminal-element")
+//     const terminal = document.getElementById('terminal');
 //     if (!terminal) {
 //         throw new Error("Terminal not found")
 //     }
-//     terminal.value += text
+//     terminal.textContent += text;
+//     terminal.scrollTop = terminal.scrollHeight;
 // }

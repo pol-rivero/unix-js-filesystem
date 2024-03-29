@@ -18,29 +18,20 @@ export function write(text: string) {
 
 
 // IF YOU TARGET THE BROWSER, REMOVE THE CODE ABOVE AND UNCOMMENT THE CODE BELOW.
-// CHANGE THE ELEMENT ID "terminal-element" TO THE ID OF YOUR TERMINAL ELEMENT.
 
 // export async function read(): Promise<string> {
-//     const terminal = document.getElementById("terminal-element")
-//     if (!terminal) {
-//         throw new Error("Terminal not found")
+//     const keyBuffer = window.KEY_BUFFER;
+//     while (keyBuffer.length === 0) {
+//         await new Promise(resolve => setTimeout(resolve, 10));
 //     }
-//     terminal.focus()
-//     return new Promise((resolve, reject) => {
-//         terminal.addEventListener("keypress", (event) => {
-//             if (event.keyCode === 13) {
-//                 const input = terminal.value
-//                 terminal.value = ""
-//                 resolve(input)
-//             }
-//         })
-//     })
+//     return keyBuffer.shift();
 // }
 
 // export function write(text: string) {
-//     const terminal = document.getElementById("terminal-element")
+//     const terminal = document.getElementById('terminal');
 //     if (!terminal) {
 //         throw new Error("Terminal not found")
 //     }
-//     terminal.value += text
+//     terminal.textContent += text;
+//     terminal.scrollTop = terminal.scrollHeight;
 // }
