@@ -7,7 +7,7 @@ export async function read(): Promise<string> {
     return new Promise(resolve => {
         process.stdin.once("data", text => {
             process.stdin.pause()
-            resolve(text.toString())
+            resolve(text.toString().replace('\r', '\n'))
         })
     })
 }

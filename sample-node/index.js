@@ -2,7 +2,7 @@ import readline from 'readline'
 import { UnixShell } from "unix-core"
 
 // Don't forget to run `npm run bundle` to generate this file
-import virtualFS from "./filesystem.cjs"
+import virtualFS from "./filesystem.js"
 
 const CTRL_C = '\u0003'
 
