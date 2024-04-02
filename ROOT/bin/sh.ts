@@ -32,7 +32,7 @@ async function parseLine(process: Process) {
         }
     } catch (e) {
         if (e instanceof UnixJsError) {
-            await process.stdout.write(`${command}: ${e.message}`)
+            await process.stdout.write(`${command}: ${e.message}\n`)
             return
         }
         throw e
@@ -42,10 +42,13 @@ async function parseLine(process: Process) {
 async function runForegroundCommand(process: Process, command: string, args: string[]) {
     const commandFile = lookupCommand(process, command)
     const newProcessPid = process.execute(commandFile, args, true)
+
+    // Create a new process group for the process and its children, and set it as the foreground process group
     process._table.updateProcessGroup(newProcessPid, newProcessPid)
     process._table.foregroundPgid = newProcessPid
+
     await process.wait(newProcessPid)
-    process._table.foregroundPgid = process.pid
+    process._table.foregroundPgid = process.pgid
 }
 
 function lookupCommand(process: Process, command: string): File {
@@ -58,7 +61,7 @@ function lookupCommand(process: Process, command: string): File {
 
 async function printPrompt(process: Process) {
     const pwd = process.currentWorkingDirectory.absolutePath
-    await process.stdout.write(`\n${pwd}$ `)
+    await process.stdout.write(`${pwd}$ `)
 }
 
 export async function handleSignal(process: Process, signal: Signal) {
@@ -69,5 +72,6 @@ export async function handleSignal(process: Process, signal: Signal) {
 
 async function handleInterrupt(process: Process) {
     currentLine = ""
+    await process.stdout.write("\n")
     await printPrompt(process)
 }

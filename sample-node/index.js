@@ -1,4 +1,3 @@
-import readline from 'readline'
 import { UnixShell } from "unix-core"
 
 // Don't forget to run `npm run bundle` to generate this file
@@ -7,12 +6,18 @@ import virtualFS from "./filesystem.js"
 const CTRL_C = '\u0003'
 
 function prepareStdin(unixShell) {
-  readline.emitKeypressEvents(process.stdin);
-  process.stdin.on('keypress', (ch, key) => {
-    if (key.sequence === CTRL_C) {
-      unixShell.interrupt()
+  globalThis.KEY_BUFFER = []
+
+  process.stdin.on("data", text => {
+    for (const key of text) {
+      if (key === CTRL_C) {
+        unixShell.interrupt()
+      } else {
+        KEY_BUFFER.push(key.replace('\r', '\n'))
+      }
     }
   })
+
   process.stdin.setRawMode(true);
   process.stdin.setEncoding("utf8")
 }
@@ -20,10 +25,7 @@ function prepareStdin(unixShell) {
 async function main() {
   const unixShell = new UnixShell(virtualFS)
   prepareStdin(unixShell)
-
   await unixShell.start()
-  // Use process.exit() to exit instead of just returning.
-  // Otherwise, background processes could keep the process running.
   process.exit()
 }
 
