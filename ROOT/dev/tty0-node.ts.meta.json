@@ -1,4 +1,5 @@
 {
+    "includeIfDefined": "UNIXJS_NODE",
     "fileType": "device",
     "isStdin": true,
     "isStdout": true

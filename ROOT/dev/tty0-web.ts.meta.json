@@ -1,0 +1,6 @@
+{
+    "includeIfDefined": "UNIXJS_DOM",
+    "fileType": "device",
+    "isStdin": true,
+    "isStdout": true
+}

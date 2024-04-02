@@ -9,7 +9,7 @@
     "allowJs": true,
     "checkJs": true,
     "baseUrl": "ROOT",
-    "lib": ["ESNext"]
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["ROOT/**/*.ts"],
 }
