@@ -40,6 +40,9 @@ async function parseLine(process: Process) {
 }
 
 async function runForegroundCommand(process: Process, command: string, args: string[]) {
+    if (await runBuiltInCommand(process, command, args)) {
+        return
+    }
     const commandFile = lookupCommand(process, command)
     const newProcessPid = process.execute(commandFile, args, true)
 
@@ -51,11 +54,19 @@ async function runForegroundCommand(process: Process, command: string, args: str
     process._table.foregroundPgid = process.pgid
 }
 
+async function runBuiltInCommand(process: Process, command: string, args: string[]): Promise<boolean> {
+    switch (command) {
+        case "exit":
+            process.exit(0)
+        case "cd":
+            process.changeDirectory(args[0] ?? '~')
+            return true
+    }
+    return false
+}
+
 function lookupCommand(process: Process, command: string): File {
     // TODO: Use PATH environment variable to find command
-    if (command === "exit") {
-        process.exit(0)
-    }
     return process.resolvePath(command).asFile()
 }
 
