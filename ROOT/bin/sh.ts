@@ -1,15 +1,25 @@
-import { Signal, UnixJsError, type File, type Process } from "unix-core"
+import { Signal, UnixJsError, type File } from "unix-core"
 
 let currentLine = ""
+const runningProcesses: Set<number> = new Set()
 
-export async function execute(process: Process) {
+export async function execute() {
+    process.registerSignalHandler(Signal.SIGINT, async () => {
+        currentLine = ""
+        await process.stdout.write("\n")
+        await printPrompt()
+    })
+    for (const signal of [Signal.SIGHUP, Signal.SIGQUIT, Signal.SIGILL, Signal.SIGABRT, Signal.SIGFPE,
+            Signal.SIGUSR1, Signal.SIGSEGV, Signal.SIGUSR2, Signal.SIGPIPE, Signal.SIGALRM, Signal.SIGTERM]) {
+        process.registerSignalHandler(signal, () => terminate(signal.exitCode))
+    }
     while (true) {
-        await mainLoop(process)
+        await mainLoop()
     }
 }
 
-async function mainLoop(process: Process) {
-    await printPrompt(process)
+async function mainLoop() {
+    await printPrompt()
     while (true) {
         const char = await process.stdin.read()
         await process.stdout.write(char)
@@ -19,16 +29,16 @@ async function mainLoop(process: Process) {
             currentLine += char
         }
     }
-    await parseLine(process)
+    await parseLine()
 }
 
-async function parseLine(process: Process) {
+async function parseLine() {
     const args = currentLine.trim().split(" ")
     currentLine = ""
     const command = args.shift()
     try {
         if (command) {
-            await runForegroundCommand(process, command, args)
+            await runCommand(command, args, false)
         }
     } catch (e) {
         if (e instanceof UnixJsError) {
@@ -39,25 +49,30 @@ async function parseLine(process: Process) {
     }
 }
 
-async function runForegroundCommand(process: Process, command: string, args: string[]) {
-    if (await runBuiltInCommand(process, command, args)) {
+async function runCommand(command: string, args: string[], background: boolean) {
+    if (await runBuiltInCommand(command, args)) {
         return
     }
-    const commandFile = lookupCommand(process, command)
+    const commandFile = lookupCommand(command)
     const newProcessPid = await process.execute(commandFile, args, true)
+    runningProcesses.add(newProcessPid)
+    if (background) {
+        return
+    }
 
     // Create a new process group for the process and its children, and set it as the foreground process group
     process._table.updateProcessGroup(newProcessPid, newProcessPid)
     process._table.foregroundPgid = newProcessPid
 
     await process.wait(newProcessPid)
+    runningProcesses.delete(newProcessPid)
     process._table.foregroundPgid = process.pgid
 }
 
-async function runBuiltInCommand(process: Process, command: string, args: string[]): Promise<boolean> {
+async function runBuiltInCommand(command: string, args: string[]): Promise<boolean> {
     switch (command) {
         case "exit":
-            process.exit(0)
+            terminate(0)
         case "cd":
             process.changeDirectory(args[0] ?? '~')
             return true
@@ -65,24 +80,19 @@ async function runBuiltInCommand(process: Process, command: string, args: string
     return false
 }
 
-function lookupCommand(process: Process, command: string): File {
+function lookupCommand(command: string): File {
     // TODO: Use PATH environment variable to find command
     return process.resolvePath(command).asFile()
 }
 
-async function printPrompt(process: Process) {
+async function printPrompt() {
     const pwd = process.currentWorkingDirectory.absolutePath
     await process.stdout.write(`${pwd}$ `)
 }
 
-export async function handleSignal(process: Process, signal: Signal) {
-    if (signal === Signal.SIGINT) {
-        await handleInterrupt(process)
+function terminate(exitCode: number): never {
+    for (const pid of runningProcesses) {
+        process.sendSignal(pid, Signal.SIGHUP)
     }
-}
-
-async function handleInterrupt(process: Process) {
-    currentLine = ""
-    await process.stdout.write("\n")
-    await printPrompt(process)
+    process.exit(exitCode)
 }

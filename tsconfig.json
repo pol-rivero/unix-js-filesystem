@@ -11,5 +11,5 @@
     "baseUrl": "ROOT",
     "lib": ["ESNext", "DOM"]
   },
-  "include": ["ROOT/**/*"],
+  "include": ["ROOT/**/*", "global.d.ts"],
 }

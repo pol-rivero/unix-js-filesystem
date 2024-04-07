@@ -1,6 +1,4 @@
-import { Process } from "unix-core"
-
-export async function execute(process: Process, args: string[]) {
+export async function execute(args: string[]) {
     if (args.length < 2) {
         await process.stdout.write(`Usage: ${args[0]} <mode>\n`)
         await process.stdout.write(`Modes: line, character\n`)
@@ -8,15 +6,15 @@ export async function execute(process: Process, args: string[]) {
     }
 
     if (args[1] === "line") {
-        await line(process)
+        await line()
     } else if (args[1] === "character") {
-        await character(process)
+        await character()
     } else {
         await process.stdout.write("Invalid mode, use 'line' or 'character'\n")
     }
 }
 
-async function character(process: Process) {
+async function character() {
     process.stdout.write("Type here:\n")
     while (true) {
         await process.stdout.write(`> `)
@@ -32,7 +30,7 @@ async function character(process: Process) {
     }
 }
 
-async function line(process: Process) {
+async function line() {
     const handle = process.stdin.open()
     process.stdout.write("Type here and press enter:\n")
     while (true) {
