@@ -19,7 +19,11 @@
         "unix-parser": "^0.0.7",
         "webpack-cli": "^5.1.4"
     },
+    "peerDependencies": {
+        "typescript": "^5.4.4"
+    },
     "scripts": {
+        "typecheck": "tsc --noEmit -p ./tsconfig.json",
         "build-node": "UNIXJS_NODE=1 unix-parser ROOT -o sample-node/filesystem.js --indent 0",
         "start-node": "node sample-node/index.js",
         "build-web": "npm run build-web.unix-parser && npm run build-web.webpack",

@@ -44,7 +44,7 @@ async function runForegroundCommand(process: Process, command: string, args: str
         return
     }
     const commandFile = lookupCommand(process, command)
-    const newProcessPid = process.execute(commandFile, args, true)
+    const newProcessPid = await process.execute(commandFile, args, true)
 
     // Create a new process group for the process and its children, and set it as the foreground process group
     process._table.updateProcessGroup(newProcessPid, newProcessPid)
