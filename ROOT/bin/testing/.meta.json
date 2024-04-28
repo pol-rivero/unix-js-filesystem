@@ -1,3 +1,4 @@
 {
-    "includeIfDefined": "UNIXJS_TESTING"
+    "includeIfDefined": "UNIXJS_TESTING",
+    "isCommandPath": true
 }
