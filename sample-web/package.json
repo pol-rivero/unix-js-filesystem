@@ -1,0 +1,23 @@
+{
+    "name": "unix-js-base-filesystem-web",
+    "module": "src/index.js",
+    "type": "module",
+    "version": "0.0.1",
+    "description": "Web sample for unix-js-filesystem",
+    "author": "p-rivero",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
+    },
+    "devDependencies": {
+        "@types/webpack": "^5.28.0",
+        "webpack-cli": "^5.1.4"
+    },
+    "scripts": {
+        "build-web": "npm run build-web.unix-parser && npm run build-web.webpack",
+        "build-web.unix-parser": "UNIXJS_DOM=1 unix-parser ../ROOT -o src/filesystem.js --indent 0",
+        "build-web.webpack": "webpack -c ./webpack.config.js && cp ./src/index.html ./dist && cp ./src/styles.css ./dist",
+        "serve-web": "http-server ./dist -c-1"
+    }
+}

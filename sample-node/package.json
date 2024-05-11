@@ -1,0 +1,20 @@
+{
+    "name": "unix-js-base-filesystem-node",
+    "module": "index.js",
+    "type": "module",
+    "version": "0.0.1",
+    "description": "Node sample for unix-js-filesystem",
+    "author": "p-rivero",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
+    },
+    "devDependencies": {
+        "@types/node": "^20.11.24"
+    },
+    "scripts": {
+        "build-node": "UNIXJS_NODE=1 unix-parser ../ROOT -o filesystem.js --indent 0",
+        "start-node": "node ./index.js"
+    }
+}

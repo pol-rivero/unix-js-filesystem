@@ -12,25 +12,20 @@
     },
     "dependencies": {
         "minimist": "^1.2.8",
-        "unix-core": "^0.0.9"
+        "unix-core": "^0.0.10"
     },
     "devDependencies": {
         "@types/minimist": "^1.2.5",
-        "@types/node": "^20.11.24",
-        "@types/webpack": "^5.28.0",
-        "unix-parser": "^0.0.7",
-        "webpack-cli": "^5.1.4"
+        "unix-parser": "^0.0.8"
     },
     "peerDependencies": {
         "typescript": "^5.4.4"
     },
     "scripts": {
+        "preinstall": "cd sample-node && npm install && cd ../sample-web && npm install",
         "typecheck": "tsc --noEmit -p ./tsconfig.json",
-        "build-node": "UNIXJS_NODE=1 unix-parser ROOT -o sample-node/filesystem.js --indent 0",
-        "start-node": "node sample-node/index.js",
-        "build-web": "npm run build-web.unix-parser && npm run build-web.webpack",
-        "build-web.unix-parser": "UNIXJS_DOM=1 unix-parser ROOT -o sample-web/src/filesystem.js --indent 0",
-        "build-web.webpack": "webpack -c ./sample-web/webpack.config.js && cp ./sample-web/src/index.html ./sample-web/dist && cp ./sample-web/src/styles.css ./sample-web/dist",
-        "start-web": "http-server sample-web/dist -c-1"
+        "run-node": "cd sample-node && npm run build-node && npm run start-node",
+        "build-web": "cd sample-web && npm run build-web",
+        "serve-web": "cd sample-web && npm run serve-web"
     }
 }
