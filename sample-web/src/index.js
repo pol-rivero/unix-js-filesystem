@@ -1,4 +1,5 @@
 import { UnixShell } from "unix-core"
+import './styles.css'
 
 // Don't forget to run `npm run bundle` to generate this file
 import virtualFS from "./filesystem.js"
