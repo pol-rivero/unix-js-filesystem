@@ -26,7 +26,7 @@ async function mainLoop() {
 
 async function printPrompt() {
     const pwd = process.currentWorkingDirectory.absolutePath
-    await process.stdout.write(`${pwd}$ `)
+    await process.stdout.write(`${ESC}[32m${pwd}${ESC}[0m$ `)
 }
 
 async function parseLine(line: string) {
