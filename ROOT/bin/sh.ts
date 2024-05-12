@@ -7,7 +7,8 @@ const runningProcesses: Set<number> = new Set()
 export async function execute() {
     process.registerSignalHandler(Signal.SIGINT, async () => {
         await process.stdout.write("\n")
-        await setCurrentLine("")
+        setCurrentLine("")
+        await printPrompt()
     })
     for (const signal of [Signal.SIGHUP, Signal.SIGQUIT, Signal.SIGILL, Signal.SIGABRT, Signal.SIGFPE,
             Signal.SIGUSR1, Signal.SIGSEGV, Signal.SIGUSR2, Signal.SIGPIPE, Signal.SIGALRM, Signal.SIGTERM]) {
@@ -157,10 +158,10 @@ async function readLine(): Promise<string> {
 async function handleEscapeSequence() {
     switch (await process.stdin.read()) {
         case "A":
-            await setCurrentLine(getPreviousCommand())
+            await setCurrentLineAndUpdateDisplay(getPreviousCommand())
             break
         case "B":
-            await setCurrentLine(getNextCommand())
+            await setCurrentLineAndUpdateDisplay(getNextCommand())
             break
         case "D":
             if (moveCursorLeft()) {
@@ -217,12 +218,19 @@ function moveCursorRight(): boolean {
     return false
 }
 
-async function setCurrentLine(text: string) {
+function setCurrentLine(text: string) {
     currentLineBuffer = text
     currentLineIndex = text.length
-    await process.stdout.write(`\r${ESC}[K`) // Clear line
-    await printPrompt()
+}
+
+async function setCurrentLineAndUpdateDisplay(text: string) {
+    if (currentLineIndex > 0) {
+        // Move cursor back to the end of the prompt
+        await process.stdout.write(`${ESC}[${currentLineIndex}D`)
+    }
+    await process.stdout.write(`${ESC}[K`) // clear the rest of the line
     await process.stdout.write(text)
+    setCurrentLine(text)
 }
 
 

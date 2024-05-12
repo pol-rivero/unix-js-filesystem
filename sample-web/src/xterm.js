@@ -31,6 +31,7 @@ export function getTerminal() {
     fontSize: 20,
     smoothScrollDuration: 50,
     convertEol: true,
+    cursorBlink: true,
     theme
   })
   const fitAddon = new FitAddon()
