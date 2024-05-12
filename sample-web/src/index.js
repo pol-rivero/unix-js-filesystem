@@ -5,22 +5,23 @@ import { UnixShell } from "unix-core"
 // Don't forget to run `npm run bundle` to generate this file
 import virtualFS from "./filesystem.js"
 
-const term = new Terminal();
-term.options.convertEol = true;
-term.open(document.getElementById('terminal'));
-
 const CTRL_C = '\u0003'
+
+const term = new Terminal({
+  convertEol: true,
+})
+term.open(document.getElementById('terminal'))
 
 function prepareStdin(unixShell) {
   window.TERM_OBJECT = term
   window.KEY_BUFFER = []
-  term.onData(data => {
-    for (let i = 0; i < data.length; i++) {
-      const char = data.charAt(i)
-      if (char === CTRL_C) {
+  
+  term.onData(text => {
+    for (const key of text) {
+      if (key === CTRL_C) {
         unixShell.interrupt()
       } else {
-        KEY_BUFFER.push(char)
+        KEY_BUFFER.push(key)
       }
     }
   })

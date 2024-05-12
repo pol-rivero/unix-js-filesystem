@@ -78,7 +78,13 @@ async function runBuiltInCommand(command: string, args: string[]): Promise<boole
         case "exit":
             terminate(0)
         case "cd":
-            process.changeDirectory(args[0] ?? '~')
+            try {
+                process.changeDirectory(args[0] ?? '~')
+            } catch (e) {
+                if (e instanceof UnixJsError) {
+                    await process.stdout.write(`cd: ${e.linuxDescription}: ${args[0]}\n`)
+                }
+            }
             return true
     }
     return false
