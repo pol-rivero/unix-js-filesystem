@@ -1,52 +1,27 @@
+import { Terminal } from '@xterm/xterm'
+import '@xterm/xterm/css/xterm.css'
 import { UnixShell } from "unix-core"
-import './styles.css'
 
 // Don't forget to run `npm run bundle` to generate this file
 import virtualFS from "./filesystem.js"
 
-const CTRL_OFFSET = -96
+const term = new Terminal();
+term.options.convertEol = true;
+term.open(document.getElementById('terminal'));
+
 const CTRL_C = '\u0003'
 
 function prepareStdin(unixShell) {
+  window.TERM_OBJECT = term
   window.KEY_BUFFER = []
-  let ctrlPressed = false
-
-  document.addEventListener('keydown', function(event) {
-    event.preventDefault()
-    let key = event.key
-    switch (key) {
-      case 'Control':
-        ctrlPressed = true
-        return
-      case 'Shift':
-      case 'Alt':
-      case 'Meta':
-      case 'AltGraph':
-        return
-      case 'Backspace':
-        key = String.fromCharCode(127)
-        break
-      case 'Enter':
-        key = '\n'
-        break
-    }
-    if (ctrlPressed) {
-      let keyLowercase = key.toLowerCase()
-      if (keyLowercase >= 'a' && keyLowercase <= 'z') {
-        key = String.fromCharCode(keyLowercase.charCodeAt(0) + CTRL_OFFSET)
+  term.onData(data => {
+    for (let i = 0; i < data.length; i++) {
+      const char = data.charAt(i)
+      if (char === CTRL_C) {
+        unixShell.interrupt()
+      } else {
+        KEY_BUFFER.push(char)
       }
-    }
-    if (key === CTRL_C) {
-      unixShell.interrupt()
-    } else {
-      KEY_BUFFER.push(key)
-    }
-  })
-
-  document.addEventListener('keyup', function(event) {
-    event.preventDefault()
-    if (event.key === 'Control') {
-      ctrlPressed = false
     }
   })
 }

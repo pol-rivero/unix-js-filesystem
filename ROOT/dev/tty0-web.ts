@@ -1,5 +1,6 @@
 declare namespace globalThis {
     const KEY_BUFFER: string[]
+    const TERM_OBJECT: { write: (text: string) => void }
 }
 
 export async function read(): Promise<string> {
@@ -13,10 +14,5 @@ export async function read(): Promise<string> {
 }
 
 export function write(text: string) {
-    const terminal = document.getElementById('terminal')
-    if (!terminal) {
-        throw new Error("Terminal not found")
-    }
-    terminal.textContent += text
-    terminal.scrollTop = terminal.scrollHeight
+    globalThis.TERM_OBJECT.write(text)
 }

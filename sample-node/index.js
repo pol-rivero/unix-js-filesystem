@@ -13,7 +13,7 @@ function prepareStdin(unixShell) {
       if (key === CTRL_C) {
         unixShell.interrupt()
       } else {
-        KEY_BUFFER.push(key.replace('\r', '\n'))
+        KEY_BUFFER.push(key)
       }
     }
   })

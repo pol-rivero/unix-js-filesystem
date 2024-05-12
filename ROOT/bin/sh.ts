@@ -122,7 +122,8 @@ async function readLine(): Promise<string> {
             await process.stdout.write(char)
         }
         switch (char) {
-            case "\n": {
+            case "\r": {
+                await process.stdin.write("\n")
                 const line = currentLineBuffer
                 currentLineBuffer = ""
                 currentLineIndex = 0
