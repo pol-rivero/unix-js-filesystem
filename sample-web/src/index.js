@@ -1,22 +1,17 @@
-import { Terminal } from '@xterm/xterm'
-import '@xterm/xterm/css/xterm.css'
 import { UnixShell } from "unix-core"
 
 // Don't forget to run `npm run bundle` to generate this file
 import virtualFS from "./filesystem.js"
+import { getTerminal } from "./xterm.js"
 
 const CTRL_C = '\u0003'
 
-const term = new Terminal({
-  convertEol: true,
-})
-term.open(document.getElementById('terminal'))
-
 function prepareStdin(unixShell) {
-  window.TERM_OBJECT = term
+  const terminal = getTerminal()
+  window.TERM_OBJECT = terminal
   window.KEY_BUFFER = []
-  
-  term.onData(text => {
+
+  terminal.onData(text => {
     for (const key of text) {
       if (key === CTRL_C) {
         unixShell.interrupt()
