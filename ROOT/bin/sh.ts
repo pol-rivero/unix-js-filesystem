@@ -2,9 +2,9 @@ import { Signal, UnixJsError, type File } from "unix-core"
 
 const ESC = "\x1b"
 const BACKSPACE = "\x7f"
-const runningProcesses: Set<number> = new Set()
+const runningProcesses = new Set<number>()
 
-export async function execute() {
+export async function execute(): Promise<void> {
     process.registerSignalHandler(Signal.SIGINT, async () => {
         await process.stdout.write("\n")
         setCurrentLine("")
@@ -19,18 +19,18 @@ export async function execute() {
     }
 }
 
-async function mainLoop() {
+async function mainLoop(): Promise<void> {
     await printPrompt()
     const line = await readLine()
     await parseLine(line)
 }
 
-async function printPrompt() {
+async function printPrompt(): Promise<void> {
     const pwd = process.currentWorkingDirectory.absolutePath
     await process.stdout.write(`${ESC}[32m${pwd}${ESC}[0m$ `)
 }
 
-async function parseLine(line: string) {
+async function parseLine(line: string): Promise<void> {
     storeCommandInHistory(line)
     const args = line.trim().split(" ")
     const command = args.shift()
@@ -51,7 +51,7 @@ async function parseLine(line: string) {
 
 // COMMAND EXECUTION
 
-async function runCommand(command: string, args: string[], background: boolean) {
+async function runCommand(command: string, args: readonly string[], background: boolean): Promise<void> {
     if (await runBuiltInCommand(command, args)) {
         return
     }
@@ -74,10 +74,11 @@ async function runCommand(command: string, args: string[], background: boolean) 
     process._table.foregroundPgid = process.pgid
 }
 
-async function runBuiltInCommand(command: string, args: string[]): Promise<boolean> {
+async function runBuiltInCommand(command: string, args: readonly string[]): Promise<boolean> {
     switch (command) {
         case "exit":
             terminate(0)
+            // eslint-disable-next-line no-fallthrough -- terminate does not return
         case "cd":
             try {
                 process.changeDirectory(args[0] ?? '~')
@@ -87,8 +88,9 @@ async function runBuiltInCommand(command: string, args: string[]): Promise<boole
                 }
             }
             return true
+        default:
+            return false
     }
-    return false
 }
 
 async function lookupCommand(command: string): Promise<File | undefined> {
@@ -106,11 +108,12 @@ async function lookupCommand(command: string): Promise<File | undefined> {
         }
     }
     await process.stdout.write(`${command}: command not found\n`)
+    return undefined
 }
 
 function terminate(exitCode: number): never {
     for (const pid of runningProcesses) {
-        process.sendSignal(pid, Signal.SIGHUP)
+        void process.sendSignal(pid, Signal.SIGHUP);
     }
     process.exit(exitCode)
 }
@@ -144,7 +147,7 @@ async function readLine(): Promise<string> {
                 break
             case ESC: {
                 if (await process.stdin.read() === "[") {
-                    handleEscapeSequence()
+                    await handleEscapeSequence()
                 }
                 break
             }
@@ -155,7 +158,7 @@ async function readLine(): Promise<string> {
     }
 }
 
-async function handleEscapeSequence() {
+async function handleEscapeSequence(): Promise<void> {
     switch (await process.stdin.read()) {
         case "A":
             await setCurrentLineAndUpdateDisplay(getPreviousCommand())
@@ -179,22 +182,25 @@ async function handleEscapeSequence() {
                 await printRemainingLine(currentLineBuffer + " ")
             }
             break
+        default:
+            // Unrecognized escape sequence, ignore
+            break
     }
 }
 
-async function printRemainingLine(text: string) {
+async function printRemainingLine(text: string): Promise<void> {
     if (currentLineIndex < text.length) {
         await process.stdout.write(text.slice(currentLineIndex))
         await process.stdout.write("\b".repeat(text.length - currentLineIndex))
     }
 }
 
-function addCharToBuffer(char: string) {
+function addCharToBuffer(char: string): void {
     currentLineBuffer = currentLineBuffer.slice(0, currentLineIndex) + char + currentLineBuffer.slice(currentLineIndex)
     currentLineIndex++
 }
 
-function removeCharFromBuffer() {
+function removeCharFromBuffer(): boolean {
     if (currentLineIndex === 0) {
         return false
     }
@@ -218,17 +224,18 @@ function moveCursorRight(): boolean {
     return false
 }
 
-function setCurrentLine(text: string) {
+function setCurrentLine(text: string): void {
     currentLineBuffer = text
     currentLineIndex = text.length
 }
 
-async function setCurrentLineAndUpdateDisplay(text: string) {
+async function setCurrentLineAndUpdateDisplay(text: string): Promise<void> {
     if (currentLineIndex > 0) {
         // Move cursor back to the end of the prompt
         await process.stdout.write(`${ESC}[${currentLineIndex}D`)
     }
-    await process.stdout.write(`${ESC}[K`) // clear the rest of the line
+    // Clear the rest of the line
+    await process.stdout.write(`${ESC}[K`)
     await process.stdout.write(text)
     setCurrentLine(text)
 }
@@ -240,7 +247,7 @@ async function setCurrentLineAndUpdateDisplay(text: string) {
 const commandHistory: string[] = []
 let commandHistoryIndex = 0
 
-function storeCommandInHistory(line: string) {
+function storeCommandInHistory(line: string): void {
     line = line.trim()
     if (line && line !== commandHistory[commandHistory.length - 1]) {
         commandHistory.push(line)

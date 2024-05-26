@@ -1,3 +1,3 @@
-export function write(text: string) {
-    process.stderr.write(text)
+export function write(text: string): void {
+    void process.stderr.write(text)
 }

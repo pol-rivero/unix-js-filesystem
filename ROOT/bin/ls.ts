@@ -1,8 +1,13 @@
 import parse from "minimist"
 import { UnixJsError } from "unix-core"
 
-export async function execute(args: string[]) {
-    const argv = parse(args.slice(1), { boolean: ["l"] })
+let flagAll = false
+
+export async function execute(args: readonly string[]): Promise<void> {
+    const argv = parse(args.slice(1), {
+        boolean: ["l", "a", "all"]
+    })
+    flagAll = argv.a as boolean || argv.all as boolean
     const directories = argv._
     if (directories.length === 0) {
         await listNode(".", false)
@@ -14,7 +19,7 @@ export async function execute(args: string[]) {
     }
 }
 
-async function listNode(path: string, printPrefix: boolean) {
+async function listNode(path: string, printPrefix: boolean): Promise<void> {
     try {
         const node = process.resolvePath(path)
         if (node.isFile()) {
@@ -24,7 +29,12 @@ async function listNode(path: string, printPrefix: boolean) {
         if (printPrefix) {
             await process.stdout.write(`${path}:\n`)
         }
-        const entries = node.asDirectory().getChildrenNames()
+
+        let entries = node.asDirectory().getChildrenNames()
+        if (!flagAll) {
+            entries = entries.filter(entry => !entry.startsWith("."))
+        }
+
         for (const entry of entries) {
             await process.stdout.write(`${entry}\n`)
         }

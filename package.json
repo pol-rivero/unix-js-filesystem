@@ -16,6 +16,11 @@
     },
     "devDependencies": {
         "@types/minimist": "^1.2.5",
+        "@stylistic/eslint-plugin": "^1.4.0",
+        "@typescript-eslint/eslint-plugin": "^6.11.0",
+        "@typescript-eslint/parser": "^6.11.0",
+        "eslint": "^8.54.0",
+        "eslint-plugin-only-warn": "^1.1.0",
         "unix-parser": "^0.0.8"
     },
     "peerDependencies": {
@@ -23,6 +28,7 @@
     },
     "scripts": {
         "preinstall": "cd sample-node && npm install && cd ../sample-web && npm install",
+        "lint": "eslint ROOT",
         "typecheck": "tsc --noEmit -p ./tsconfig.json",
         "run-node": "cd sample-node && npm run build-node && npm run start-node",
         "build-web": "cd sample-web && npm run build-web",

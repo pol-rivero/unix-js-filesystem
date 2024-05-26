@@ -1,4 +1,4 @@
 
-export function execute(args: string[]) {
+export function execute(_args: readonly string[]): void {
     // TODO: Implement
 }
