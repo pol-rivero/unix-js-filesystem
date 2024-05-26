@@ -140,7 +140,7 @@ async function readLine(): Promise<string> {
                 return line
             }
             case BACKSPACE:
-                if (removeCharFromBuffer()) {
+                if (removeCharBack()) {
                     await process.stdout.write("\b")
                     await printRemainingLine(currentLineBuffer + " ")
                 }
@@ -178,7 +178,7 @@ async function handleEscapeSequence(): Promise<void> {
             break
         case "3":
             if (await process.stdin.read() === "~") {
-                removeCharFromBuffer()
+                removeCharForward()
                 await printRemainingLine(currentLineBuffer + " ")
             }
             break
@@ -200,12 +200,18 @@ function addCharToBuffer(char: string): void {
     currentLineIndex++
 }
 
-function removeCharFromBuffer(): boolean {
+function removeCharBack(): boolean {
     if (currentLineIndex === 0) {
         return false
     }
     currentLineBuffer = currentLineBuffer.slice(0, currentLineIndex - 1) + currentLineBuffer.slice(currentLineIndex)
     return moveCursorLeft()
+}
+
+function removeCharForward(): void {
+    if (currentLineIndex < currentLineBuffer.length) {
+        currentLineBuffer = currentLineBuffer.slice(0, currentLineIndex) + currentLineBuffer.slice(currentLineIndex + 1)
+    }
 }
 
 function moveCursorLeft(): boolean {
