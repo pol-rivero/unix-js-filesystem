@@ -4,11 +4,11 @@
     "type": "module",
     "version": "0.0.1",
     "description": "This is a base filesystem for unix.js. It performs basic I/O and contains some UNIX coreutils.",
-    "author": "p-rivero",
+    "author": "pol-rivero",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
+        "url": "git+https://github.com/pol-rivero/unix-js-filesystem.git"
     },
     "dependencies": {
         "minimist": "^1.2.8",

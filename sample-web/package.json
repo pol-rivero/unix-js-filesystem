@@ -4,11 +4,11 @@
     "type": "module",
     "version": "0.0.1",
     "description": "Web sample for unix-js-filesystem",
-    "author": "p-rivero",
+    "author": "pol-rivero",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/p-rivero/unix-js-filesystem.git"
+        "url": "git+https://github.com/pol-rivero/unix-js-filesystem.git"
     },
     "devDependencies": {
         "vite": "^5.2.0"
