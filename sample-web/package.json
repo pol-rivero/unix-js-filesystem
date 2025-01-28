@@ -11,7 +11,7 @@
         "url": "git+https://github.com/pol-rivero/unix-js-filesystem.git"
     },
     "devDependencies": {
-        "vite": "^5.2.14"
+        "vite": "^5.4.12"
     },
     "scripts": {
         "build-web": "npm run build-web.unix-parser && npm run build-web.webpack",
